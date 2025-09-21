@@ -1,0 +1,26 @@
+# pip install -r requirements.txt
+import os
+from pathlib import Path
+from docx2pdf import convert  # uses Word on Windows and Quartz on macOS
+
+def batch_convert_docx_to_pdf(input_dir: str, output_dir: str) -> None:
+    in_path = Path(input_dir)
+    out_path = Path(output_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+
+    # Find all .docx files (non-recursive; make it rglob("*.docx") for recursive)
+    docx_files = sorted(in_path.glob("*.docx"))
+
+    if not docx_files:
+        print(f"No .docx files found in: {in_path}")
+        return
+
+    for docx_file in docx_files:
+        pdf_name = docx_file.with_suffix(".pdf").name
+        pdf_path = out_path / pdf_name
+        print(f"Converting: {docx_file} -> {pdf_path}")
+        convert(str(docx_file), str(pdf_path))  # write output into offer_lettersPDF
+    print("All conversions completed.")
+
+if __name__ == "__main__":
+    batch_convert_docx_to_pdf("offer_letters", "offer_lettersPDF")
